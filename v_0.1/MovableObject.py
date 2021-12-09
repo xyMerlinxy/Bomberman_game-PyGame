@@ -71,19 +71,17 @@ class MovableObject(Object):
             if self.distance_to_move < 0:
                 self.end_move()
                 return True
-        #check background in fire
+
+        # check background in fire
         for back in self.my_background:
             for obj in back.object:
                 if obj.__class__ == FireSegment and self.colliderect(obj):
-                    #print("Col")
                     self.destroy()
         return False
 
     def end_move(self):
-        print("End move")
         self.movement = 0
         self.distance_to_move = 0
         self.set_cords(self.destination)
         self.my_background = self.my_background[1:]
-        # print(f"Cords: {self.cords} Rect_pos: ({self.x},{self.y}) Position: {self.position}")
 

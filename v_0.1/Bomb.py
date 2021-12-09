@@ -1,8 +1,7 @@
 import pygame
 from MovableObject import MovableObject
 from Field import Field
-from Object import Object
-from Fire import *
+from Fire import Fire
 
 
 class Bomb(MovableObject):
@@ -25,14 +24,7 @@ class Bomb(MovableObject):
         self.moving = True
 
         self.speed = 1
-
         self.power = 5
-
-        # # if placed on fire
-        # for obj in self.my_background[0].object:
-        #     print(obj.__class__)
-        #     if obj.__class__ == FireSegment:
-        #         self.destroy()
 
     def move_object(self):  # type: ()-> bool
         if self.state == 0:
@@ -44,35 +36,20 @@ class Bomb(MovableObject):
                 self.explode()
             else:
                 super().move_object()
-            #     # self.my_background[0].add_object(self)
-            #     # print(
-            #     #     f"Bomb kicked: Cords: {self.cords} Rect_pos: ({self.x},{self.y}) Position: {self.position}
-            #     #       Background: {self.my_background[0]}")
-            #     if self.state==1:
-            #         self.explode()
-            #     return True
-            # elif self.movement==0 and self.state==1:
-            #
-            # # elif self.state == 1:
-            # #     self.explode()
-
         return False
 
     def can_kick(self):
-        # print("kick ",self.state == 0)
         return self.state == 0
 
     def set_move_parameters(self, destination: tuple[int, int], next_background: Field):
         super().set_move_parameters(destination, next_background)
         next_background.add_object(self)
-        print(f"Bomb added to {next_background.cords}")
 
     def kick(self, direction):
         if self.state == 0 and self.movement == 0:
             self.direction = direction
             x = self.position[0]
             y = self.position[1]
-            # print(f"Bomb kick: Position: {self.position} Cords: {self.cords} Direct: {self.direction}")
             if self.direction == 0 and self.background[x - 1][y].can_entry_bomb():
                 self.set_move_parameters((self.cords[0] - self.game.size, self.cords[1]), self.background[x - 1][y])
             elif self.direction == 1 and self.background[x][y - 1].can_entry_bomb():
@@ -99,7 +76,6 @@ class Bomb(MovableObject):
             elif self.state == 2:
                 self.power -= 1
                 if self.power:
-                    # print(f"Power {self.power}")
                     for f in self.fires:
                         f.next()
                     self.timer = self.time_fire
@@ -116,14 +92,12 @@ class Bomb(MovableObject):
 
             self.set_cords((self.position[0] * self.game.size, self.position[1] * self.game.size))
             self.owner.bomb_counter -= 1
-            # print(f"Owner id: {self.owner.number} counter {self.owner.bomb_counter}")
             self.fires = [Fire(self.game, self, self.position, 4, 0),
                           Fire(self.game, self, self.position, 0, self.power),
                           Fire(self.game, self, self.position, 1, self.power),
                           Fire(self.game, self, self.position, 2, self.power),
                           Fire(self.game, self, self.position, 3, self.power),
                           ]
-            # self.power -= 1
 
             self.timer = self.time_fire
 
@@ -156,7 +130,6 @@ class Bomb(MovableObject):
         super().hide()
 
     def end(self):
-        # print("END")
         for f in self.fires: f.delete()
         super().hide()
         for b in self.my_background:
@@ -170,7 +143,6 @@ class Bomb(MovableObject):
         super().end_move()
 
     def destroy(self):
-        # print("DESTROY")
         if self.state < 2:
             self.state = 1
             self.set_cords((self.position[0] * self.game.size, self.position[1] * self.game.size))

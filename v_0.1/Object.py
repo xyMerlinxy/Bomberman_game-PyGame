@@ -39,5 +39,4 @@ class Object(pygame.Rect):
         self.image = image
 
     def destroy(self):
-        #print("DES")
         return False

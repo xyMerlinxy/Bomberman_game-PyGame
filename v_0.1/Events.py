@@ -6,9 +6,9 @@ PLAYER_2_INSENSITIVITY_OFF = pygame.USEREVENT + 3
 PLAYER_3_INSENSITIVITY_OFF = pygame.USEREVENT + 4
 
 
-def creat_event(id: int, _dict: dict = {}):
-    return pygame.event.Event(id, _dict)
+def creat_event(event_id: int, _dict: dict = None):
+    return pygame.event.Event(event_id, _dict)
 
 
-def rise_event(id: int, delay: int = 0):
-    pygame.time.set_timer(pygame.event.Event(id), delay)
+def rise_event(event_id: int, delay: int = 0):
+    pygame.time.set_timer(pygame.event.Event(event_id), delay)

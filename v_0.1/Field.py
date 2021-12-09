@@ -1,4 +1,5 @@
 import pygame
+
 from Object import Object
 
 
@@ -10,8 +11,10 @@ class Field(Object):
         self.object = []
         self.number_of_player = 0
 
+    def __str__(self):
+        return f"Cords: {self.cords} Name: {self.name} Entry: {self.possibility_of_entry}"
+
     def can_entry(self):
-        # print(f"Move to: {self} number of object: {len(self.object)}")
         return self.possibility_of_entry and sum(obj.can_entry() for obj in self.object) == len(self.object)
 
     def can_entry_bomb(self): return self.can_entry() and self.number_of_player == 0
@@ -24,17 +27,11 @@ class Field(Object):
             if o.kick(direction): return True
         return False
 
-    def __str__(self):
-        return f"Cords: {self.cords} Name: {self.name} Entry: {self.possibility_of_entry}"
-
     def add_object(self, obj: Object):
         self.object.append(obj)
-        # print(f"Added object to {self} Object: {len(self.object)}")
 
     def remove_object(self, obj: Object):
-        # print(f"Remove object to {self} Object: {len(self.object)}")
         if obj in self.object: self.object.remove(obj)
 
     def destroy(self):
-        #print(self.object, sum(1 for o in self.object if o.destroy))
-        return sum(1 for o in self.object if o.destroy())>0
+        return sum(1 for o in self.object if o.destroy()) > 0

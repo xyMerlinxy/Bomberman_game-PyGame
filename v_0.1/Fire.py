@@ -1,14 +1,16 @@
 from Field import Field
 from Object import Object
 
+FIRE_TYPE_CENTER = 0
+FIRE_TYPE_HORIZONTAL = 1
+FIRE_TYPE_VERTICAL = 2
+
 
 class FireSegment(Object):
-    def __init__(self,game, cords, image, possibility_of_entry, type):
-        rect_offset=(5 if type == 1 else 0, 5 if type == 2 else 0)
-        rect_size=(game.size-(10 if type == 1 else 0), game.size-(10 if type == 2 else 0))
-
-        super().__init__(game, cords, image, possibility_of_entry)
-    pass
+    def __init__(self, game, cords, image, possibility_of_entry, fire_type):
+        rect_offset = (10 if fire_type == 2 else 0, 10 if fire_type == 1 else 0)
+        rect_size = (game.size - (20 if fire_type == 2 else 0), game.size - (20 if fire_type == 1 else 0))
+        super().__init__(game, cords, image, possibility_of_entry, rect_offset, rect_size)
 
 
 class Fire:
@@ -19,6 +21,9 @@ class Fire:
 
         self.my_background: list[Field] = []
 
+        self.type = FIRE_TYPE_CENTER if direction == 4 else (
+            FIRE_TYPE_VERTICAL if direction == 0 or direction == 2 else FIRE_TYPE_HORIZONTAL)
+
         # center of fire
         if direction == 4:
             pos = begin_position
@@ -26,7 +31,7 @@ class Fire:
             field = self.game.get_background(pos)
             self.my_background.append(field)
             self.fire_segments = [
-                FireSegment(self.game, [self.game.size * pos[0], self.game.size * pos[1]], img, True,0)]
+                FireSegment(self.game, [self.game.size * pos[0], self.game.size * pos[1]], img, True, self.type)]
             self.my_background.append(field)
             field.add_object(self.fire_segments[0])
         else:
@@ -40,8 +45,6 @@ class Fire:
         self.type = [1, 2][direction % 2] if direction != 4 else 0
 
         self.next()
-
-
 
     def next(self):
         if self.power > 0:
@@ -62,12 +65,12 @@ class Fire:
             if field.destroy(): self.power = 1
 
             if field.can_entry():
-                fire_segmaent = FireSegment(self.game, [self.game.size * pos[0], self.game.size * pos[1]],
-                                            self.images[1],
-                                            True, self.type)
-                self.fire_segments.append(fire_segmaent)
+                fire_segment = FireSegment(self.game, [self.game.size * pos[0], self.game.size * pos[1]],
+                                           self.images[1],
+                                           True, self.type)
+                self.fire_segments.append(fire_segment)
                 self.my_background.append(field)
-                field.add_object(fire_segmaent)
+                field.add_object(fire_segment)
             else:
                 self.power = 0
 

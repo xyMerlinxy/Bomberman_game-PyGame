@@ -21,7 +21,7 @@ class Game:
 
         self.to_update = []
 
-        self.lvl_name = "lvl_1_v3"
+        self.lvl_name = "lvl_1"
         self.background = []
         self.load_map(self.lvl_name)
 
@@ -34,11 +34,11 @@ class Game:
         self.alive_players: list[Player] = list(p for p in self.all_players)
         self.dead_players: list[Player] = []
 
-        self.alive_players[0].set_insensitivity(True)
-        self.alive_players[1].set_insensitivity(True)
-
-        rise_event(PLAYER_0_INSENSITIVITY_OFF, 11000)
-        rise_event(PLAYER_1_INSENSITIVITY_OFF, 15000)
+        # self.alive_players[0].set_insensitivity(True)
+        # self.alive_players[1].set_insensitivity(True)
+        #
+        # rise_event(PLAYER_0_INSENSITIVITY_OFF, 11000)
+        # rise_event(PLAYER_1_INSENSITIVITY_OFF, 15000)
 
         # frames per second setting
         self.FPS = 60
@@ -62,7 +62,6 @@ class Game:
 
         loaded_images = []
         for i in range(numbers_of_images):
-            print(f'map/{graphic_type}/{i}')
             loaded_images.append(pygame.image.load(f'map/{graphic_type}/{i}.bmp'))
 
         # TODO check if there is that folder
@@ -118,10 +117,8 @@ class Game:
                         self.all_players[2].set_insensitivity(False)
                     elif event.type == PLAYER_3_INSENSITIVITY_OFF:
                         self.all_players[3].set_insensitivity(False)
-                    rise_event(event.type,0)
+                    rise_event(event.type, 0)
             # keys = pygame.key.get_pressed()
-
-            # if self.players[0].colliderect(self.players[1]): print(f"Colide")
 
             for p in self.alive_players: p.start_move()
             for p in self.alive_players: p.hide()
