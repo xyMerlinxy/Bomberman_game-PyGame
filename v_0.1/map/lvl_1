@@ -1,12 +1,15 @@
 default_graphic
-tl ctd bt ctd bt ctd bt ctd bt ctd bt ctd bt ctd bt ctd tr
-clr cn clr cn clr cn clr cn clr cn clr cn clr cn clr cn clr
-bl ctd c ctd c ctd c ctd c ctd c ctd c ctd c ctd br
-clr cn clr cn clr cn clr cn clr cn clr cn clr cn clr cn clr
-bl ctd c ctd c ctd c ctd c ctd c ctd c ctd c ctd br
-clr cn clr cn clr cn clr cn clr cn clr cn clr cn clr cn clr
-bl ctd c ctd c ctd c ctd c ctd c ctd c ctd c ctd br
-clr cn clr cn clr cn clr cn clr cn clr cn clr cn clr cn clr
-bl ctd c ctd c ctd c ctd c ctd c ctd c ctd c ctd br
-clr cn clr cn clr cn clr cn clr cn clr cn clr cn clr cn clr
-dl ctd bd ctd bd ctd bd ctd bd ctd bd ctd bd ctd bd ctd dr
+12
+3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	2
+5	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5
+5	0	1	0	1	0	1	0	1	0	1	0	1	0	1	0	1	0	5
+5	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5
+5	0	1	0	1	0	1	0	1	0	1	0	1	0	1	0	1	0	5
+5	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5
+5	0	1	0	1	0	1	0	1	0	1	0	1	0	1	0	1	0	5
+5	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5
+5	0	1	0	1	0	1	0	1	0	1	0	1	0	1	0	1	0	5
+5	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5
+5	0	1	0	1	0	1	0	1	0	1	0	1	0	1	0	1	0	5
+5	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5
+7	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	6
