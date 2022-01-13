@@ -1,4 +1,4 @@
-# Bomberman_game-PyGame-
+# Bomberman_game-PyGame
 Bomberman game created in PyGame
 
 Version: 0.1:
