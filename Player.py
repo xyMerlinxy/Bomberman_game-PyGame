@@ -23,6 +23,9 @@ class Player(MovableObject):
         self.speed = 2.9
         self.key = Player.key_player[self.id]
 
+        print(self.id)
+        print(self.position, self.x, self.y, self.cords)
+
         self.bomb_counter = 0
         self.bomb_max = 3
 
@@ -54,6 +57,8 @@ class Player(MovableObject):
         if self.bomb_max > self.bomb_counter and self.background[self.position[0]][self.position[1]].can_entry():
             self.game.bomb_list.append(Bomb(self.game, self.position, self))
             self.bomb_counter += 1
+            print(
+                f"Bomb placed: {self.position}, {self.bomb_max}>{self.bomb_counter} ID:{self.id}, {self.game.bomb_list[-1]}")
 
     def release_key(self, key):
         if key in self.key and self.key.index(key) < 4:
@@ -64,6 +69,9 @@ class Player(MovableObject):
         super().set_move_parameters(destination, next_background)
 
         self.my_background[-1].number_of_player += 1
+        # print()
+        # print(f"{self.my_background[0].cords} Num of player: {self.my_background[0].number_of_player}")
+        # print(f"{self.my_background[1].cords} Num of player: {self.my_background[1].number_of_player}")
 
     def start_move(self):
 
@@ -104,6 +112,8 @@ class Player(MovableObject):
 
     def end_move(self):
         self.my_background[0].number_of_player -= 1
+        # print(f"{self.my_background[0].cords} Num of player: {self.my_background[0].number_of_player}")
+        # print(f"{self.my_background[1].cords} Num of player: {self.my_background[1].number_of_player}")
         super().end_move()
 
     def destroy(self):
@@ -115,4 +125,8 @@ class Player(MovableObject):
         return False
 
     def set_insensitivity(self, insensitivity):
+        print(f"Player {self.id} insensitivty {insensitivity}")
         self.insensitivity = insensitivity
+
+    def collect(self, powerup):
+        powerup.collect(self)

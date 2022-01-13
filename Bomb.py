@@ -44,6 +44,7 @@ class Bomb(MovableObject):
     def set_move_parameters(self, destination: tuple[int, int], next_background: Field):
         super().set_move_parameters(destination, next_background)
         next_background.add_object(self)
+        print(f"Bomb added to {next_background.cords}")
 
     def kick(self, direction):
         if self.state == 0 and self.movement == 0:
@@ -130,6 +131,7 @@ class Bomb(MovableObject):
         super().hide()
 
     def end(self):
+        # print("END")
         for f in self.fires: f.delete()
         super().hide()
         for b in self.my_background:
@@ -143,6 +145,7 @@ class Bomb(MovableObject):
         super().end_move()
 
     def destroy(self):
+        # print("DESTROY")
         if self.state < 2:
             self.state = 1
             self.set_cords((self.position[0] * self.game.size, self.position[1] * self.game.size))

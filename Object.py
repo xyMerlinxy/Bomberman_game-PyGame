@@ -25,8 +25,6 @@ class Object(pygame.Rect):
 
     def collision_with_player(self): pass
 
-    def in_the_fire(self): pass
-
     def get_image(self): return self.image
 
     def get_cords(self): return self.cords
@@ -40,3 +38,9 @@ class Object(pygame.Rect):
 
     def destroy(self):
         return False
+
+
+    def __str__(self):
+        return f"{self.__class__}:{super().__str__()}"
+    def __repr__(self):
+        return f"{self.__class__}:{super().__repr__()}"

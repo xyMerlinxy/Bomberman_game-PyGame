@@ -34,6 +34,9 @@ class Fire:
                 FireSegment(self.game, [self.game.size * pos[0], self.game.size * pos[1]], img, True, self.type)]
             self.my_background.append(field)
             field.add_object(self.fire_segments[0])
+            # destroy object under fire
+            for i in self.my_background[0].object:
+                i.destroy()
         else:
             self.images = [self.game.bomb_images[1][1][direction],
                            self.game.bomb_images[1][2][direction]]
@@ -62,7 +65,7 @@ class Fire:
             if len(self.fire_segments): self.fire_segments[-1].set_image(self.images[0])
 
             field = self.game.get_background(pos)
-            if field.destroy(): self.power = 1
+            if field.destroy(): self.power = 0
 
             if field.can_entry():
                 fire_segment = FireSegment(self.game, [self.game.size * pos[0], self.game.size * pos[1]],

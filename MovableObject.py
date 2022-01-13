@@ -2,6 +2,7 @@ import pygame
 from Object import Object
 from Field import Field
 from Fire import *
+from PowerUp import PowerUp
 
 
 class MovableObject(Object):
@@ -72,16 +73,22 @@ class MovableObject(Object):
                 self.end_move()
                 return True
 
-        # check background in fire
+        # check background in fire or powerup
         for back in self.my_background:
             for obj in back.object:
                 if obj.__class__ == FireSegment and self.colliderect(obj):
                     self.destroy()
+                elif obj.__class__ == PowerUp and self.colliderect(obj):
+                    self.collect(obj)
         return False
 
     def end_move(self):
+        print("End move")
         self.movement = 0
         self.distance_to_move = 0
         self.set_cords(self.destination)
         self.my_background = self.my_background[1:]
+        # print(f"Cords: {self.cords} Rect_pos: ({self.x},{self.y}) Position: {self.position}")
 
+    def collect(self, powerup):
+        pass
