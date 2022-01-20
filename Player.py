@@ -10,39 +10,53 @@ from Field import Field
 class Player(MovableObject):
     key_player = [
         [pygame.K_LEFT, pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_RCTRL],
-        [pygame.K_a, pygame.K_w, pygame.K_d, pygame.K_s, pygame.K_SPACE]
+        [pygame.K_a, pygame.K_w, pygame.K_d, pygame.K_s, pygame.K_LALT],
+        [pygame.K_KP4, pygame.K_KP8, pygame.K_KP6, pygame.K_KP5, pygame.K_KP0],
+        [pygame.K_h, pygame.K_u, pygame.K_k, pygame.K_j, pygame.K_SPACE]
     ]
-
     def __init__(self, game, cords, number):
         self.id = number
-        self.images = self.load_images()
+        self.images = []
+        self.load_images()
+        self.insensitivity_timer = 0
+        self.insensitivity = False
+        #self.insensitivity = self.id==1
 
         super().__init__(game, cords, self.images[0], True, (9, 1), (25, 43))
         self.my_background[0].number_of_player += 1
 
-        self.speed = 2.9
+        self.speed = 1.5
         self.key = Player.key_player[self.id]
 
         print(self.id)
         print(self.position, self.x, self.y, self.cords)
 
         self.bomb_counter = 0
-        self.bomb_max = 3
+        self.bomb_max = 1
 
         self.pressed_key = []
 
         self.lives = 1
-        self.insensitivity = False
+        # TODO Temp
+
 
     def load_images(self):
-        return [pygame.image.load(f"img\\player\\player_{self.id}_stay.png"),
-                pygame.image.load(f"img\\player\\player_{self.id}_go.png")]
+        self.images= [
+                [pygame.image.load(f"img\\player\\player_{self.id}_stay.png"),
+                    pygame.image.load(f"img\\player\\player_{self.id}_go.png")
+                 ],
+                []
+                ]
+        for i in self.images[0]:
+            temp=i.copy()
+            temp.set_alpha(127, 0)
+            self.images[1].append(temp)
 
     def draw(self):
         if 10 < self.distance_to_move < 35:
-            self.image = self.images[1]
+            self.image = self.images[self.insensitivity][1]
         else:
-            self.image = self.images[0]
+            self.image = self.images[self.insensitivity][0]
         super().draw()
 
     def press_key(self, key):
@@ -124,9 +138,16 @@ class Player(MovableObject):
                 self.hide()
         return False
 
-    def set_insensitivity(self, insensitivity):
-        print(f"Player {self.id} insensitivty {insensitivity}")
-        self.insensitivity = insensitivity
+    def insensitivity_on(self):
+        self.insensitivity=True
+        print(f"Player {self.id} insensitivty {self.insensitivity}")
+        self.insensitivity_timer=10000 # 10 second
+
 
     def collect(self, powerup):
         powerup.collect(self)
+
+    def change_timer(self,dt):
+        self.insensitivity_timer-=dt
+        if self.insensitivity_timer<=0:
+            self.insensitivity=False

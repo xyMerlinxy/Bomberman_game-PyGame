@@ -38,9 +38,15 @@ class Game:
         self.load_powerUp_images()
         self.powerUp_list: list[PowerUp]=[]
 
-        self.all_players: list[Player] = [Player(self, [1 * self.size, 1 * self.size], 0),
-                                          Player(self, [17 * self.size, 1 * self.size], 1)]
-        self.alive_players: list[Player] = list(p for p in self.all_players)
+        # player start position
+        psc=[[1,1],[17,1],[1,11],[17,11]]
+
+        self.all_players: list[Player] = list(
+            Player(self, [psc[i][0] * self.size, psc[i][1] * self.size], i) for i in range(4)
+        )
+
+
+        self.alive_players: list[Player] = list(self.all_players)
         self.dead_players: list[Player] = []
 
         # self.alive_players[0].set_insensitivity(True)
@@ -110,13 +116,11 @@ class Game:
         ]
 
     def load_powerUp_images(self):
-        number_of_powerups = 1
-        F = pygame.image.load
+        number_of_powerups = PowerUp.number_of_powerups
         for i in range(number_of_powerups):
-            self.powerUp_images.append(list(
-                    F(f"img/powerup/p{i}_{j}.png")
-                    for j in range(2)
-                ))
+            self.powerUp_images.append(
+                    pygame.image.load(f"img/powerup/p{i}.png")
+                )
         print(self.powerUp_images)
 
     def remove_player(self, player):
@@ -131,21 +135,22 @@ class Game:
                     pygame.quit()
                     quit()
                 elif event.type == pygame.KEYDOWN:
+                    print(event.key)
                     for p in self.alive_players:
                         p.press_key(event.key)
                 elif event.type == pygame.KEYUP:
                     for p in self.alive_players:
                         p.release_key(event.key)
-                elif PLAYER_0_INSENSITIVITY_OFF <= event.type <= PLAYER_3_INSENSITIVITY_OFF:
-                    if event.type == PLAYER_0_INSENSITIVITY_OFF:
-                        self.all_players[0].set_insensitivity(False)
-                    elif event.type == PLAYER_1_INSENSITIVITY_OFF:
-                        self.all_players[1].set_insensitivity(False)
-                    elif event.type == PLAYER_2_INSENSITIVITY_OFF:
-                        self.all_players[2].set_insensitivity(False)
-                    elif event.type == PLAYER_3_INSENSITIVITY_OFF:
-                        self.all_players[3].set_insensitivity(False)
-                    rise_event(event.type, 0)
+                # elif PLAYER_0_INSENSITIVITY_OFF <= event.type <= PLAYER_3_INSENSITIVITY_OFF:
+                #     if event.type == PLAYER_0_INSENSITIVITY_OFF:
+                #         self.all_players[0].set_insensitivity(False)
+                #     elif event.type == PLAYER_1_INSENSITIVITY_OFF:
+                #         self.all_players[1].set_insensitivity(False)
+                #     elif event.type == PLAYER_2_INSENSITIVITY_OFF:
+                #         self.all_players[2].set_insensitivity(False)
+                #     elif event.type == PLAYER_3_INSENSITIVITY_OFF:
+                #         self.all_players[3].set_insensitivity(False)
+                #     rise_event(event.type, 0)
             # keys = pygame.key.get_pressed()
 
             for p in self.alive_players: p.start_move()
@@ -156,7 +161,7 @@ class Game:
             for b in self.bomb_list: b.move_object()
 
             for b in self.bomb_list: b.change_timer(self.delta_time)
-
+            for p in self.alive_players: p.change_timer(self.delta_time)
             #for w in self.walls_list: w.draw()
             for u in self.powerUp_list: u.draw()
             for b in self.bomb_list: b.draw()
