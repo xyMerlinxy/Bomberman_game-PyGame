@@ -1,6 +1,6 @@
-img/powerup/projekty/
+img/powerup/projekty
 img/powerup/tło_czerwone.png
 img/powerup/tło_zielone.png
 
-*.txt
-*.xlsx
+.txt
+.xlsx
