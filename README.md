@@ -6,3 +6,6 @@ Two player, sequensive exploded bombs, collison with other obejcts, fire destroy
 
 Version: 0.2:
 Add wall and one powerup.
+
+Version: 0.2.1:
+3 upgrades added.
