@@ -1,18 +1,18 @@
 import pygame
 from Object import Object
 from Field import Field
-from Fire import *
 from PowerUp import PowerUp
+from Fire import FireSegment
 
 
 class MovableObject(Object):
 
-    def __init__(self, game, cords, image, possibility_of_entry, rect_offset=(0, 0), rect_size=None):
+    def __init__(self, game, level, cords, image, possibility_of_entry, rect_offset=(0, 0), rect_size=None):
         self.distance_to_move = 0
 
-        super().__init__(game, cords, image, possibility_of_entry, rect_offset, rect_size)
+        super().__init__(game, level, cords, image, possibility_of_entry, rect_offset, rect_size)
 
-        self.background: list[list[Field]] = self.game.background
+        self.background: list[list[Field]] = self.level.background
 
         self.position = (0, 0)
         self.cords: list = [0, 0]

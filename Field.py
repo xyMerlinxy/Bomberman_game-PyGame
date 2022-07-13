@@ -2,14 +2,24 @@ import pygame
 
 from Object import Object
 
-
 class Field(Object):
-    def __init__(self, game, name, cords, image):
+    images = []
+
+    def __init__(self, game, level, name, cords):
         self.name = name
-        super().__init__(game, cords, image, self.name == 0)
+        super().__init__(game, level, cords, self.images[name], self.name == 0)
 
         self.object = []
         self.number_of_player = 0
+
+    @staticmethod
+    def load_images(graphic_type, number):
+        print("Loading wall images:")
+        for i in range(number):
+            print(f'\tmap/{graphic_type}/{i}')
+            Field.images.append(pygame.image.load(f'map/{graphic_type}/{i}.bmp'))
+        print()
+
 
     def __str__(self):
         return f"Cords: {self.cords} Name: {self.name} Entry: {self.possibility_of_entry}"
@@ -31,7 +41,10 @@ class Field(Object):
         self.object.append(obj)
 
     def remove_object(self, obj: Object):
-        if obj in self.object: self.object.remove(obj)
+        if obj in self.object:
+            print("FIELD: DELETE",obj)
+            self.object.remove(obj)
 
-    def destroy(self):
-        return sum(1 for o in self.object if o.destroy()) > 0
+    def destroy(self, time=0):
+        return any(o.destroy(time) for o in self.object)
+

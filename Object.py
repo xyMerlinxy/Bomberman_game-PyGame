@@ -1,14 +1,16 @@
+
 import pygame
 
 
 class Object(pygame.Rect):
 
-    def __init__(self, game, cords: list[float, float],
+    def __init__(self, game, level, cords: list[float, float],
                  image: pygame.Surface,
                  possibility_of_entry: bool = False,
                  rect_offset: tuple[int, int] = (0, 0),
                  rect_size: tuple[int, int] = None):
         self.game = game
+        self.level = level
         self.cords = cords
         self.rect_offset: tuple = rect_offset
         self.rect_size: tuple = (self.game.size, self.game.size) if rect_size is None else rect_size
@@ -23,8 +25,6 @@ class Object(pygame.Rect):
 
     def kick(self, direction: int): pass
 
-    def collision_with_player(self): pass
-
     def get_image(self): return self.image
 
     def get_cords(self): return self.cords
@@ -36,11 +36,13 @@ class Object(pygame.Rect):
     def set_image(self, image: pygame.Surface):
         self.image = image
 
-    def destroy(self):
+    def destroy(self, time=0):
         return False
 
+    def delete(self): pass
 
     def __str__(self):
         return f"{self.__class__}:{super().__str__()}"
+
     def __repr__(self):
         return f"{self.__class__}:{super().__repr__()}"

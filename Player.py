@@ -14,15 +14,15 @@ class Player(MovableObject):
         [pygame.K_KP4, pygame.K_KP8, pygame.K_KP6, pygame.K_KP5, pygame.K_KP0],
         [pygame.K_h, pygame.K_u, pygame.K_k, pygame.K_j, pygame.K_SPACE]
     ]
-    def __init__(self, game, cords, number):
+
+    def __init__(self, game, level, cords, number):
         self.id = number
         self.images = []
         self.load_images()
         self.insensitivity_timer = 0
         self.insensitivity = False
-        #self.insensitivity = self.id==1
 
-        super().__init__(game, cords, self.images[0], True, (9, 1), (25, 43))
+        super().__init__(game, level, cords, self.images[0], True, (9, 1), (25, 43))
         self.my_background[0].number_of_player += 1
 
         self.speed = 1.5
@@ -33,22 +33,24 @@ class Player(MovableObject):
 
         self.bomb_counter = 0
         self.bomb_max = 1
+        self.bomb_power = 1
 
         self.pressed_key = []
 
         self.lives = 1
-        # TODO Temp
 
+        # TODO change name
+        self.ability_to_kick = False
 
     def load_images(self):
-        self.images= [
-                [pygame.image.load(f"img\\player\\player_{self.id}_stay.png"),
-                    pygame.image.load(f"img\\player\\player_{self.id}_go.png")
-                 ],
-                []
-                ]
+        self.images = [
+            [pygame.image.load(f"img\\player\\player_{self.id}_stay.png"),
+             pygame.image.load(f"img\\player\\player_{self.id}_go.png")
+             ],
+            []
+        ]
         for i in self.images[0]:
-            temp=i.copy()
+            temp = i.copy()
             temp.set_alpha(127, 0)
             self.images[1].append(temp)
 
@@ -61,22 +63,23 @@ class Player(MovableObject):
 
     def press_key(self, key):
         if key in self.key:
-            if self.key.index(key) == 4:
+            k_index = self.key.index(key)
+            if k_index == 4:
                 self.plant_bomb()
             else:
-                if key in self.pressed_key: self.pressed_key.remove(key)
-                self.pressed_key.append(key)
+                if k_index in self.pressed_key: self.pressed_key.remove(k_index)
+                self.pressed_key.append(self.key.index(key))
+        print(self.pressed_key)
 
     def plant_bomb(self):
         if self.bomb_max > self.bomb_counter and self.background[self.position[0]][self.position[1]].can_entry():
-            self.game.bomb_list.append(Bomb(self.game, self.position, self))
+            Bomb.list_.append(Bomb(self.game, self.level, self.position, self, self.bomb_power))
             self.bomb_counter += 1
-            print(
-                f"Bomb placed: {self.position}, {self.bomb_max}>{self.bomb_counter} ID:{self.id}, {self.game.bomb_list[-1]}")
 
     def release_key(self, key):
         if key in self.key and self.key.index(key) < 4:
-            self.pressed_key.remove(key)
+            self.pressed_key.remove(self.key.index(key))
+        print(self.pressed_key)
 
     def set_move_parameters(self, destination, next_background: Field, direction=0):
         self.direction = direction
@@ -90,38 +93,30 @@ class Player(MovableObject):
     def start_move(self):
 
         if self.movement == 0 and len(self.pressed_key):
-            for k in self.pressed_key[::-1]:
-                self.direction = self.key.index(k)
-                if self.reaction_for_key(k):
+            for key in self.pressed_key[::-1]:
+                if self.reaction_for_key(key):
+                    self.direction = (key + self.level.change_direction) % 4
                     break
 
     def reaction_for_key(self, key):
-        x = self.position[0]
-        y = self.position[1]
-        if key == self.key[0] and (self.background[x - 1][y].can_entry() or self.background[x - 1][y].can_kick()):
-            if self.background[x - 1][y].can_entry():
-                self.set_move_parameters((self.cords[0] - self.game.size, self.cords[1]), self.background[x - 1][y], 0)
-                return True
-            elif self.background[x - 1][y].kick(0):
-                return True
-        elif key == self.key[1] and (self.background[x][y - 1].can_entry() or self.background[x][y - 1].can_kick()):
-            if self.background[x][y - 1].can_entry():
-                self.set_move_parameters((self.cords[0], self.cords[1] - self.game.size), self.background[x][y - 1], 1)
-                return True
-            elif self.background[x][y - 1].kick(1):
-                return True
-        elif key == self.key[2] and (self.background[x + 1][y].can_entry() or self.background[x + 1][y].can_kick()):
-            if self.background[x + 1][y].can_entry():
-                self.set_move_parameters((self.cords[0] + self.game.size, self.cords[1]), self.background[x + 1][y], 2)
-                return True
-            elif self.background[x + 1][y].kick(2):
-                return True
-        elif key == self.key[3] and (self.background[x][y + 1].can_entry() or self.background[x][y + 1].can_kick()):
-            if self.background[x][y + 1].can_entry():
-                self.set_move_parameters((self.cords[0], self.cords[1] + self.game.size), self.background[x][y + 1], 3)
-                return True
-            elif self.background[x][y + 1].kick(3):
-                return True
+        x, y = self.position
+        index = (key + self.level.change_direction) % 4
+        if index == 0:
+            x -= 1
+        elif index == 1:
+            y -= 1
+        elif index == 2:
+            x += 1
+        elif index == 3:
+            y += 1
+        entry = self.background[x][y].can_entry()
+        kick = self.ability_to_kick and self.background[x][y].can_kick()
+
+        if entry:
+            self.set_move_parameters((x * self.game.size, y * self.game.size), self.background[x][y], 0)
+            return True
+        elif kick and self.background[x][y].kick(index):
+            return True
         return False
 
     def end_move(self):
@@ -130,24 +125,23 @@ class Player(MovableObject):
         # print(f"{self.my_background[1].cords} Num of player: {self.my_background[1].number_of_player}")
         super().end_move()
 
-    def destroy(self):
+    def destroy(self, time=0):
         if not self.insensitivity:
             self.lives -= 1
             if self.lives == 0:
-                self.game.remove_player(self)
+                self.level.remove_player(self)
                 self.hide()
         return False
-
-    def insensitivity_on(self):
-        self.insensitivity=True
-        print(f"Player {self.id} insensitivty {self.insensitivity}")
-        self.insensitivity_timer=10000 # 10 second
-
 
     def collect(self, powerup):
         powerup.collect(self)
 
-    def change_timer(self,dt):
-        self.insensitivity_timer-=dt
-        if self.insensitivity_timer<=0:
-            self.insensitivity=False
+    def insensitivity_on(self):
+        self.insensitivity = True
+        print(f"Player {self.id} insensitivity {self.insensitivity}")
+        self.insensitivity_timer = 10000  # 10 second
+
+    def change_timer(self, dt):
+        self.insensitivity_timer -= dt
+        if self.insensitivity_timer <= 0:
+            self.insensitivity = False
